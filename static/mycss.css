@@ -1,0 +1,54 @@
+#time_slider {
+    display: inline-block;
+    width: 30%;
+    margin-left: 20px;
+}
+
+#time_val {
+    margin-left: 10px;
+    margin-right: 20px;
+}
+
+#slider_container {
+    display: inline-block;
+    width: 50%;
+}
+
+body {
+    font-family: Monospace;
+}
+
+.chart {
+    width: 300px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+.xlabel {
+    text-align: center;
+}
+
+.chart_container {
+    display: inline-block;
+    width: 33%;
+}
+
+.top-right-box {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding-top: 20px;
+    padding-right: 20px;
+}
+
+.flashes {
+    list-style: none;
+}
+
+.flash-item {
+    color: red;
+}
+
+.expand {
+    position: absolute;
+}

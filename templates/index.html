@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Task Manager of {{ machine_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='mycss.css') }}">
+</head>
+<body>
+<h2>Task Manager of {{ machine_name }}</h2>
+<hr>
+<form action="login" method="post">
+    <label for="username">Username:</label>
+    <input id="username" name="username" type="text"><br>
+    <label for="password">Password:</label>
+    <input id="password" name="password" type="password"><br>
+    <input type="submit" value="Invia!">
+</form>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flashes">
+    {% for message in messages %}
+      <li class="flash-item">{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+</body>
+</html>
