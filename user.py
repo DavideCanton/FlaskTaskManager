@@ -1,8 +1,9 @@
 __author__ = 'Kami'
 
-from flask_login import UserMixin
 from hashlib import sha256
 import os.path as osp
+
+from flask_login import UserMixin
 
 
 class Credentials:

@@ -2,7 +2,7 @@ from flask.helpers import flash
 
 __author__ = 'Kami'
 
-from flask import Flask, jsonify, request, render_template, redirect, url_for
+from flask import Flask, jsonify, request, redirect, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, \
     current_user
 from user import User, load_credentials

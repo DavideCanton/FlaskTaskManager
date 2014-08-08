@@ -1,15 +1,15 @@
 __author__ = 'Kami'
 
-import psutil
 import signal
-from jinja2.filters import do_filesizeformat
 from socket import gethostname
 import os
 
-SIGNALS = ["SIGINT", "SIGCONT", "SIGSTOP", "SIGHUP", "SIGKILL", "SIGTERM",
-           "SIGUSR1", "SIGUSR2"]
+import psutil
+
+
 SIGNALS = {getattr(signal, name): name
-           for name in SIGNALS
+           for name in ["SIGINT", "SIGCONT", "SIGSTOP", "SIGHUP",
+                        "SIGKILL", "SIGTERM", "SIGUSR1", "SIGUSR2"]
            if hasattr(signal, name)}
 
 
