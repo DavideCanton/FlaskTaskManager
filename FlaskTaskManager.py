@@ -90,7 +90,7 @@ def proc_list():
 @app.route("/credits")
 @templated("credits.html")
 def credits_view():
-    return {}
+    pass
 
 
 @app.route("/proc_info", methods=["GET"])

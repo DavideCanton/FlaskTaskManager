@@ -59,11 +59,16 @@ function setupMenu()
         selector: '#proc_list tbody tr',
         build: function ($trigger, e)
         {
+            if (!sel_id)
+                return false;
+            $trigger = $('#' + sel_id);
             var name = $trigger.children().eq("0").text();
             var pid = $trigger.children().eq("1").text();
             return {
                 callback: function (key, options)
                 {
+                    var strnum = null;
+                    var signum = null;
                     if (key == "choose")
                     {
                         var num = prompt("Inserisci il codice relativo al segnale che vuoi inviare:", "15");
@@ -73,30 +78,26 @@ function setupMenu()
                             alert("Numero inserito non valido!");
                             return;
                         }
-                        var answer = confirm("Vuoi davvero inviare il segnale " + num + " al processo " + name + "?");
-                        if (answer)
-                        {
-                            $.post('/kill', {'pid': pid, 'signum': num}, function (data)
-                            {
-                                alert(data);
-                                sel_id = null;
-                            });
-                        }
+                        strnum = num;
+                        signum = num;
                     }
                     else
                     {
                         var regex = new RegExp("sig(\\w+)_(\\d+)");
                         // splitted[1] is the name, splitted[2] the number
                         var splitted = regex.exec(key);
-                        var answer = confirm("Vuoi davvero inviare il segnale SIG" + splitted[1].toUpperCase() + " al processo " + name + "?");
-                        if (answer)
+                        strnum = "SIG" + splitted[1].toUpperCase();
+                        signum = splitted[2];
+                    }
+
+                    var answer = confirm("Vuoi davvero inviare il segnale " + strnum + " al processo " + name + "?");
+                    if (answer)
+                    {
+                        $.post('/kill', {'pid': pid, 'signum': signum}, function (data)
                         {
-                            $.post('/kill', {'pid': pid, 'signum': splitted[2]}, function (data)
-                            {
-                                alert(data);
-                                sel_id = null;
-                            });
-                        }
+                            alert(data);
+                            sel_id = null;
+                        });
                     }
                 },
                 items: menu_sign
