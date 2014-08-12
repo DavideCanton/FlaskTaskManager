@@ -122,15 +122,17 @@ def kill():
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         host = sys.argv[1]
-        debug = sys.argv[2]
+        port = int(sys.argv[2])
+        debug = False
     else:
         debug = True
         # host = "localhost"
         host = "0.0.0.0"
+        port = 80
 
     try:
         c = load_credentials()
         app.config["CREDENTIALS"] = c
-        app.run(debug=bool(debug), host=host)
+        app.run(debug=bool(debug), host=host, port=port)
     except IOError:
         print >> sys.stderr, "Cannot load login data."
