@@ -28,13 +28,15 @@
 
 __author__ = 'Davide Canton'
 
+import sys
+
 from flask import Flask, jsonify, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, \
     current_user
 from user import User, load_credentials
 from decorators import templated
 from processes import get_processes, get_data, kill_proc, get_available_signals
-import sys
+
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = (u'I\x9d\x8e\x1e[*!gAlD_3\x08P]\xad'
@@ -119,7 +121,7 @@ def kill():
         return "Operazione terminata con successo!"
 
 
-if __name__ == "__main__":
+def main():
     if len(sys.argv) > 1:
         host = sys.argv[1]
         port = int(sys.argv[2])
@@ -136,3 +138,6 @@ if __name__ == "__main__":
         app.run(debug=bool(debug), host=host, port=port)
     except IOError:
         print >> sys.stderr, "Cannot load login data."
+
+if __name__ == "__main__":
+    main()
