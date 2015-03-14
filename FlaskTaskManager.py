@@ -6,7 +6,7 @@
 # 1. Redistributions of source code must retain the above copyright
 # notice, this list of conditions and the following disclaimer.
 # 2. Redistributions in binary form must reproduce the above copyright
-#    notice, this list of conditions and the following disclaimer in the
+# notice, this list of conditions and the following disclaimer in the
 #    documentation and/or other materials provided with the distribution.
 # 3. All advertising materials mentioning features or use of this software
 #    must display the following acknowledgement:
@@ -30,12 +30,12 @@ __author__ = 'Davide Canton'
 
 import sys
 
-from flask import Flask, jsonify, request, redirect, url_for, flash
+from flask import Flask, jsonify, request, redirect, url_for, flash, \
+    render_template
 from flask_login import LoginManager, login_user, login_required, logout_user, \
     current_user
 
 from user import User, load_credentials
-from decorators import templated
 from processes import get_processes, get_data, kill_proc, get_available_signals
 
 
@@ -54,12 +54,11 @@ def load_user(userid):
 
 
 @app.route("/")
-@templated()
 def index():
     if current_user.is_authenticated():
         return redirect(url_for("proc_list"))
-    machine_name = get_data()["machine_name"]
-    return {"machine_name": machine_name}
+    ctx = {"machine_name": get_data()["machine_name"]}
+    return render_template("index.html", **ctx)
 
 
 @app.route("/login", methods=["POST"])
@@ -83,17 +82,16 @@ def logout():
 
 
 @app.route("/proc_list")
-@templated()
 @login_required
 def proc_list():
-    return {"processes": get_processes(),
-            "signals": get_available_signals()}
+    ctx = {"processes": get_processes(),
+           "signals": get_available_signals()}
+    return render_template("proc_list.html", **ctx)
 
 
 @app.route("/credits")
-@templated("credits.html")
 def credits_view():
-    pass
+    return render_template("credits.html")
 
 
 @app.route("/proc_info", methods=["GET"])
@@ -139,6 +137,7 @@ def main():
         app.run(debug=bool(debug), host=host, port=port)
     except IOError:
         print("Cannot load login data.", file=sys.stderr)
+
 
 if __name__ == "__main__":
     main()

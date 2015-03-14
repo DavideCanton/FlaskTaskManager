@@ -31,16 +31,16 @@ function setupPlots()
     cpu_plot = $.plot(container, [
         []
     ], {
-        yaxis: { min: 0, max: 100, ticks: 10 },
-        xaxis: { show: false, min: 0, max: plot_size - 1 }
+        yaxis: {min: 0, max: 100, ticks: 10},
+        xaxis: {show: false, min: 0, max: plot_size - 1}
     });
 
     container = $("#mem_chart");
     mem_plot = $.plot(container, [
         []
     ], {
-        yaxis: { min: 0, max: 100, ticks: 10 },
-        xaxis: { show: false, min: 0, max: plot_size - 1 }
+        yaxis: {min: 0, max: 100, ticks: 10},
+        xaxis: {show: false, min: 0, max: plot_size - 1}
     });
 }
 
@@ -50,8 +50,11 @@ function setupMenu()
     var menu_sign = {};
     for (var k in signals)
     {
-        var s = k.toLowerCase() + "_" + signals[k];
-        menu_sign[s] = {name: "Send " + k};
+        if (signals.hasOwnProperty(k))
+        {
+            var s = k.toLowerCase() + "_" + signals[k];
+            menu_sign[s] = {name: "Send " + k};
+        }
     }
     menu_sign["choose"] = {name: "Input signal number"};
 
@@ -93,7 +96,10 @@ function setupMenu()
                     var answer = confirm("Vuoi davvero inviare il segnale " + strnum + " al processo " + name + "?");
                     if (answer)
                     {
-                        $.post('/kill', {'pid': pid, 'signum': signum}, function (data)
+                        $.post('/kill', {
+                            'pid': pid,
+                            'signum': signum
+                        }, function (data)
                         {
                             alert(data);
                             sel_id = null;
@@ -191,16 +197,16 @@ function setupTable()
             'paging': false,
             'lengthChange': false,
             'columns': [
-                { 'className': 'dt-center' },
-                { 'className': 'dt-center' },
-                { 'className': 'dt-center' },
-                { 'className': 'dt-center' },
-                { 'className': 'dt-center' },
-                { 'className': 'dt-center' },
-                { 'className': 'dt-center' },
-                { 'className': 'dt-left' }
+                {'className': 'dt-center'},
+                {'className': 'dt-center'},
+                {'className': 'dt-center'},
+                {'className': 'dt-center'},
+                {'className': 'dt-center'},
+                {'className': 'dt-center'},
+                {'className': 'dt-center'},
+                {'className': 'dt-left'}
             ],
-            'order': [ 0, 'asc' ],
+            'order': [0, 'asc'],
             'fnRowCallback': function (nRow, aData, iDisplayIndex, iDisplayIndexFull)
             {
                 $(nRow).attr('id', 'proc_' + aData[1]);
