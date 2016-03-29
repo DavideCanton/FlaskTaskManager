@@ -29,13 +29,12 @@
 __author__ = 'Davide Canton'
 
 import signal
-from socket import gethostname
+import socket
 import os
 
 import psutil
 
-
-SIGNALS = {getattr(signal, name): name
+SIGNALS = {int(getattr(signal, name)): name
            for name in ["SIGINT", "SIGCONT", "SIGSTOP", "SIGHUP",
                         "SIGKILL", "SIGTERM", "SIGUSR1", "SIGUSR2"]
            if hasattr(signal, name)}
@@ -51,9 +50,13 @@ def get_processes():
         try:
             if proc.name() is not None:
                 times = proc.cpu_times()
-                data = [proc.name(), proc.pid, proc.ppid(),
-                        proc.cpu_percent(), proc.memory_info()[0],
-                        r2(times[0]), r2(times[1]),
+                data = [proc.name(),
+                        proc.pid,
+                        proc.ppid(),
+                        proc.cpu_percent(),
+                        proc.memory_info()[0],
+                        r2(times[0]),
+                        r2(times[1]),
                         " ".join(proc.cmdline())]
                 buf.append(data)
         except psutil.AccessDenied:
@@ -63,7 +66,7 @@ def get_processes():
 
 def get_data():
     mem = psutil.virtual_memory()
-    return {"machine_name": gethostname(),
+    return {"machine_name": socket.gethostname(),
             "cpu_num": psutil.cpu_count(logical=False) or 1,
             "cpu_percent": psutil.cpu_percent(),
             "total_mem": mem.total,

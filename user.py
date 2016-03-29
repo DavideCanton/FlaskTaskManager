@@ -28,7 +28,7 @@
 
 __author__ = 'Davide Canton'
 
-from hashlib import sha256
+import hashlib
 import os.path as osp
 
 from flask_login import UserMixin
@@ -56,4 +56,4 @@ class User(UserMixin):
         self.id = username
         if password is not None:
             password = password.encode("utf-8")
-            self.password = sha256(password).digest()
+            self.password = hashlib.sha256(password).digest()

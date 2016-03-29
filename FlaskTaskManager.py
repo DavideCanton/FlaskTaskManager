@@ -35,9 +35,8 @@ from flask import Flask, jsonify, request, redirect, url_for, flash, \
 from flask_login import LoginManager, login_user, login_required, logout_user, \
     current_user
 
-from user import User, load_credentials
-from processes import get_processes, get_data, kill_proc, get_available_signals
-
+import user
+import processes
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = (u'I\x9d\x8e\x1e[*!gAlD_3\x08P]\xad'
@@ -50,14 +49,14 @@ login_manager.login_view = "index"
 
 @login_manager.user_loader
 def load_user(userid):
-    return User(userid)
+    return user.User(userid)
 
 
 @app.route("/")
 def index():
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         return redirect(url_for("proc_list"))
-    ctx = {"machine_name": get_data()["machine_name"]}
+    ctx = {"machine_name": processes.get_data()["machine_name"]}
     return render_template("index.html", **ctx)
 
 
@@ -65,9 +64,9 @@ def index():
 def login():
     username = request.form["username"]
     password = request.form["password"]
-    user = User(username, password)
-    if app.config["CREDENTIALS"].validate_user(user):
-        login_user(user)
+    curuser = user.User(username, password)
+    if app.config["CREDENTIALS"].validate_user(curuser):
+        login_user(curuser)
         return redirect(url_for("proc_list"))
     flash("Login non valido!")
     return redirect(url_for("index"))
@@ -84,8 +83,8 @@ def logout():
 @app.route("/proc_list")
 @login_required
 def proc_list():
-    ctx = {"processes": get_processes(),
-           "signals": get_available_signals()}
+    ctx = {"processes": processes.get_processes(),
+           "signals": processes.get_available_signals()}
     return render_template("proc_list.html", **ctx)
 
 
@@ -97,14 +96,14 @@ def credits_view():
 @app.route("/proc_info", methods=["GET"])
 @login_required
 def proc_info():
-    processes = get_processes()
-    return jsonify(data=processes)
+    p = processes.get_processes()
+    return jsonify(data=p)
 
 
 @app.route("/platform_info", methods=["GET"])
 @login_required
 def platform_info():
-    data = get_data()
+    data = processes.get_data()
     return jsonify(data=data)
 
 
@@ -113,7 +112,7 @@ def platform_info():
 def kill():
     proc_id = request.form["pid"]
     signum = request.form["signum"]
-    res = kill_proc(int(proc_id), int(signum))
+    res = processes.kill_proc(int(proc_id), int(signum))
     if res:
         return "Errore: {}".format(res)
     else:
@@ -127,12 +126,12 @@ def main():
         debug = False
     else:
         debug = True
-        # host = "localhost"
-        host = "0.0.0.0"
+        host = "localhost"
+        # host = "0.0.0.0"
         port = 80
 
     try:
-        c = load_credentials()
+        c = user.load_credentials()
         app.config["CREDENTIALS"] = c
         app.run(debug=bool(debug), host=host, port=port)
     except IOError:

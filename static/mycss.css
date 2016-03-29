@@ -14,8 +14,12 @@
     width: 50%;
 }
 
+#proc_list tbody tr {
+    cursor: pointer;
+}
+
 body {
-    font-family: Monospace;
+    font-family: Monospace, monospace;
 }
 
 .chart {
