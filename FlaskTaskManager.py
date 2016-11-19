@@ -128,7 +128,7 @@ def main():
         debug = True
         host = "localhost"
         # host = "0.0.0.0"
-        port = 80
+        port = 8000
 
     try:
         c = user.load_credentials()

@@ -222,6 +222,7 @@ ko.bindingHandlers.procTable =
                     $(nRow).attr('id', 'proc_' + aData[1]);
                     return nRow;
                 },
+                scrollY: document.body.scrollHeight - 200,
                 columnDefs: [
                     {
                         render: function (data, type)
