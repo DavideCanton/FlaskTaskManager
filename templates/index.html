@@ -8,7 +8,7 @@
 <body>
 <h2>Task Manager of {{ machine_name }}</h2>
 <hr>
-<form action="login" method="post">
+<form action="/login" method="post">
     <label for="username">Username:</label>
     <input id="username" name="username" type="text"><br>
     <label for="password">Password:</label>
@@ -16,13 +16,13 @@
     <input type="submit" value="Invia!">
 </form>
 {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class="flashes">
-    {% for message in messages %}
-      <li class="flash-item">{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
+    {% if messages %}
+        <ul class="flashes">
+            {% for message in messages %}
+                <li class="flash-item">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endwith %}
 </body>
 </html>

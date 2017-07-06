@@ -1,7 +1,8 @@
 #time_slider {
     display: inline-block;
-    width: 30%;
-    margin-left: 20px;
+    width: 71%;
+    margin-left: 6px;
+    margin-top: 10px;
 }
 
 #time_val {
@@ -10,18 +11,24 @@
 }
 
 #slider_container {
-    display: inline-block;
-    width: 50%;
+    margin-bottom: 20px;
+}
+
+#proc_list tbody tr {
+    cursor: pointer;
 }
 
 body {
-    font-family: Monospace;
+    font-family: Monospace, monospace;
+    margin: 0;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .chart {
     width: 300px;
     height: 200px;
-    margin: 0 auto;
 }
 
 .xlabel {
@@ -30,7 +37,9 @@ body {
 
 .chart_container {
     display: inline-block;
-    width: 33%;
+    clear: both;
+    float: left;
+    margin-bottom: 20px;
 }
 
 .top-right-box {
@@ -49,6 +58,28 @@ body {
     color: red;
 }
 
-.expand {
-    position: absolute;
+#side-menu {
+    width: 350px;
+    float: left;
+    height: 100%;
 }
+
+#main-content {
+    float: left;
+    height: 100%;
+    width: calc(100% - 350px);
+}
+
+#container {
+    overflow: hidden;
+    height: 100%;
+}
+
+#container > h2 {
+    margin: 0 0 20px 0;
+}
+
+html {
+    height: 100%;
+}
+

@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html>
+
 <head lang="en">
     <meta charset="UTF-8">
     <title>Proc info</title>
-    <link rel="stylesheet" type="text/css"
-          href="{{ url_for('static', filename='mycss.css') }}">
-    <link rel="stylesheet" type="text/css"
-          href="{{ url_for('static', filename='jquery.contextMenu.css') }}">
-    <link rel="stylesheet"
-          href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css"
-          href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css">
-    <!-- jQuery -->
-    <script type="text/javascript" charset="utf8"
-            src="//code.jquery.com/jquery-1.10.2.min.js"></script>
-    <!-- DataTables -->
-    <script type="text/javascript" charset="utf8"
-            src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
-    <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-    <script src="{{ url_for('static', filename='jquery.contextMenu.js') }}"></script>
-    <script src="{{ url_for('static', filename='jquery.flot.js') }}"></script>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='mycss.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='jquery-contextmenu/jquery.contextMenu.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css') }}">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/datatables/media/css/dataTables.bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/datatables/media/css/jquery.dataTables.min.css') }}">
+
+    <script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bower_components/datatables/media/js/jquery.dataTables.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='bower_components/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery-contextmenu/jquery.contextMenu.js') }}"></script>
+    <script src="{{ url_for('static', filename='bower_components/Flot/jquery.flot.js') }}"></script>
+    <script src="{{ url_for('static', filename='bower_components/knockout/dist/knockout.debug.js') }}"></script>
+    <script src="{{ url_for('static', filename='bower_components/lodash/dist/lodash.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bower_components/system.js/dist/system.js') }}"></script>
+
     <script type="text/javascript">
         var signals = {
             {% for signum, name in signals.items() %}
@@ -28,73 +29,93 @@
             {% endfor %}
         }
     </script>
-    <script src="{{ url_for('static', filename='proc_handler.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+    <script type="text/javascript">
+    // set our baseURL reference path
+    SystemJS.config({
+        baseURL: "{{ url_for('static', filename='js')}}"
+    });
+
+    SystemJS.import('app.js');
+    </script>
 
 </head>
 
 <body>
-<h2>Process list on <span id="machine_name"></span></h2>
-<hr>
-<div id="slider_container">
-    <label for="time_slider">Intervallo di aggiornamento:</label>
 
-    <div id="time_slider"></div>
-    <span id="time_val"></span>
-</div>
-<hr>
-<div>
-    <div class="chart_container">
-        <div id="cpu_chart" class="chart"></div>
-        <div class="xlabel">
-            CPU Usage = <span id="cpu_percent"></span>
+
+    <div id="container">
+        <h2>Process list on <span data-bind="text: machine_name"></span></h2>
+        <div id="side-menu">
+            <div id="slider_container">
+                <label for="time_slider">Intervallo di aggiornamento:</label>
+
+                <div id="time_slider"></div>
+                <span data-bind="text: time_val"></span>
+            </div>
+
+            <div>
+                <div class="chart_container">
+                    <div id="cpu_chart" class="chart" data-bind="plot: cpu_data_for_plot, plotOptions: { plot_size: 30 }"></div>
+                    <div class="xlabel">
+                        CPU Usage = <span data-bind="text: cpu_percent"></span>
+                    </div>
+                </div>
+                <div class="chart_container">
+                    <div id="mem_chart" class="chart" data-bind="plot: mem_data_for_plot, plotOptions: { plot_size: 30 }"></div>
+                    <div class="xlabel">
+                        Mem Usage = <span data-bind="text: percent_mem"></span>
+                    </div>
+                </div>
+                <div class="chart_container">
+                    <table id="stat">
+                        <tr>
+                            <td>CPU Num:</td>
+                            <td><span data-bind="text: cpu_num"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Total memory:</td>
+                            <td><span data-bind="text: total_mem"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Available Memory:</td>
+                            <td><span data-bind="text: available_mem"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Processi in esecuzione:
+                                <td><span data-bind="text: nproc"></span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="main-content">
+            <table id="proc_list" data-bind="procTable: { sel_id: sel_id, procTableObj: procTableObj }">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>PID</th>
+                        <th>Parent PID</th>
+                        <th>CPU Percent Usage</th>
+                        <th>Memory used (RSS)</th>
+                        <th>User Time</th>
+                        <th>System Time</th>
+                        <th>Cmd Line</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
-    <div class="chart_container">
-        <div id="mem_chart" class="chart"></div>
-        <div class="xlabel">
-            Mem Usage = <span id="percent_mem"></span>
-        </div>
-    </div>
-    <div class="chart_container expand">
-        <table id="stat">
-            <tr>
-                <td>CPU Num:</td>
-                <td><span id="cpu_num"></span></td>
-            </tr>
-            <tr>
-                <td>Total memory:</td>
-                <td><span id="total_mem"></span></td>
-            </tr>
-            <tr>
-                <td>Available Memory:</td>
-                <td><span id="available_mem"></span></td>
-            </tr>
-            <tr>
-                <td>Processi in esecuzione:
-                <td><span id="nproc"></span></td>
-            </tr>
-        </table>
-    </div>
-</div>
-<hr>
-<table id="proc_list">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>PID</th>
-        <th>Parent PID</th>
-        <th>CPU Percent Usage</th>
-        <th>Memory used (RSS)</th>
-        <th>User Time</th>
-        <th>System Time</th>
-        <th>Cmd Line</th>
-    </tr>
-    </thead>
-</table>
-<a href="{{ url_for('credits_view') }}">Credits</a>
 
-<div class="top-right-box">
-    <a href="{{ url_for('logout') }}">Logout</a>
-</div>
+    <div class="top-right-box">
+        <a href="{{ url_for('credits_view') }}">Credits</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+
 </body>
+
 </html>

@@ -1,0 +1,22 @@
+{
+  "name": "flask_task_manager",
+  "version": "1.0.0",
+  "description": "FlaskTaskManager",
+  "author": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Flot": "jquery-flot#~0.8.3",
+    "jquery-ui": "~1.11.4",
+    "lodash": "^4.6.1",
+    "knockout": "^3.4.0",
+    "datatables": "~1.10.10",
+    "jquery": "~2.1.4"
+  }
+}

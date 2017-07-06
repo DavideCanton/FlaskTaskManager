@@ -28,7 +28,7 @@
 
 __author__ = 'Davide Canton'
 
-from hashlib import sha256
+import hashlib
 import os.path as osp
 
 from flask_login import UserMixin
@@ -46,7 +46,7 @@ class Credentials:
 def load_credentials():
     path, _ = osp.split(__file__)
     with open(osp.join(path, "hash.tmp"), "rb") as f:
-        username = f.readline().strip()
+        username = f.readline().strip().decode("utf-8")
         password = f.read()
     return Credentials(username, password)
 
@@ -55,4 +55,5 @@ class User(UserMixin):
     def __init__(self, username, password=None):
         self.id = username
         if password is not None:
-            self.password = sha256(password).digest()
+            password = password.encode("utf-8")
+            self.password = hashlib.sha256(password).digest()

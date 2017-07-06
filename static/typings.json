@@ -1,0 +1,7 @@
+{
+  "name": "flask_task_manager",
+  "dependencies": {
+    "knockout": "registry:npm/knockout#3.4.0+20160516171930",
+    "lodash": "registry:npm/lodash#4.0.0+20161015015725"
+  }
+}

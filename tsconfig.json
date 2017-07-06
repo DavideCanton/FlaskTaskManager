@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "system",
+        "sourceMap": true,
+        "outDir": "static/js"   
+    },
+    "compileOnSave": true,
+    "include": [
+        "static/ts/*"
+    ]
+}

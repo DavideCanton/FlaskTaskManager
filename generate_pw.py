@@ -28,13 +28,13 @@
 
 __author__ = 'Davide Canton'
 
-from hashlib import sha256
-from getpass import getpass
+import hashlib
+import getpass
 
 if __name__ == "__main__":
-    username = raw_input("Username: ")
-    password = getpass()
+    username = input("Username: ")
+    password = getpass.getpass()
     with open("hash.tmp", "wb") as f:
-        f.write(username)
-        f.write("\n")
-        f.write(sha256(password).digest())
+        f.write(username.encode("utf-8"))
+        f.write(b"\n")
+        f.write(hashlib.sha256(password.encode("utf-8")).digest())
