@@ -26,8 +26,6 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-__author__ = 'Davide Canton'
-
 import sys
 
 from flask import Flask, jsonify, request, redirect, url_for, flash, \
@@ -37,6 +35,9 @@ from flask_login import LoginManager, login_user, login_required, logout_user, \
 
 import user
 import processes
+
+__author__ = 'Davide Canton'
+
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = (u'I\x9d\x8e\x1e[*!gAlD_3\x08P]\xad'
@@ -83,8 +84,10 @@ def logout():
 @app.route("/proc_list")
 @login_required
 def proc_list():
-    ctx = {"processes": processes.get_processes(),
-           "signals": processes.get_available_signals()}
+    ctx = {
+        "processes": processes.get_processes(),
+        "signals": processes.get_available_signals()
+    }
     return render_template("proc_list.html", **ctx)
 
 
@@ -127,16 +130,15 @@ def main():
     else:
         debug = True
         host = "localhost"
-        # host = "0.0.0.0"
         port = 8000
 
     try:
-        c = user.load_credentials()
-        app.config["CREDENTIALS"] = c
-        app.run(debug=bool(debug), host=host, port=port)
+        credentials = user.load_credentials()
+        app.config["CREDENTIALS"] = credentials
+        app.run(debug, host, port)
     except IOError:
         print("Cannot load login data.", file=sys.stderr)
 
-        
+
 if __name__ == "__main__":
     main()

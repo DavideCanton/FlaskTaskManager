@@ -26,13 +26,13 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-__author__ = 'Davide Canton'
-
 import signal
 import socket
 import os
 
 import psutil
+
+__author__ = 'Davide Canton'
 
 SIGNALS = {int(getattr(signal, name)): name
            for name in ["SIGINT", "SIGCONT", "SIGSTOP", "SIGHUP",
@@ -76,7 +76,7 @@ def get_data():
 
 def kill_proc(pid, signum):
     if signum not in SIGNALS:
-        return "Unsupported signal with code {}".format(signum)
+        return f"Unsupported signal with code {signum}"
     try:
         os.kill(pid, signum)
         return None

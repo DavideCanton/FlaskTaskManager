@@ -26,12 +26,12 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-__author__ = 'Davide Canton'
-
 import hashlib
 import os.path as osp
 
 from flask_login import UserMixin
+
+__author__ = 'Davide Canton'
 
 
 class Credentials:
@@ -40,7 +40,8 @@ class Credentials:
         self.password = password
 
     def validate_user(self, user):
-        return user.get_id() == self.username and user.password == self.password
+        return (user.get_id() == self.username and 
+                user.password == self.password)
 
 
 def load_credentials():
