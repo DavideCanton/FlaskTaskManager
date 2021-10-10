@@ -5,42 +5,43 @@
     <meta charset="UTF-8">
     <title>Proc info</title>
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='mycss.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='jquery-contextmenu/jquery.contextMenu.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css') }}">
+    <link rel="stylesheet"
+          type="text/css"
+          href="{{ url_for('static', filename='mycss.css') }}">
+    <link rel="stylesheet"
+          type="text/css"
+          href="{{ url_for('static', filename='node_modules/jquery-contextmenu/dist/jquery.contextMenu.css') }}">
+    <link rel="stylesheet"
+          type="text/css"
+          href="{{ url_for('static', filename='node_modules/jquery-ui/themes/base/all.css') }}">
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/datatables/media/css/dataTables.bootstrap.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/datatables/media/css/jquery.dataTables.min.css') }}">
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='node_modules/datatables/media/css/dataTables.bootstrap.min.css') }}"> -->
+    <link rel="stylesheet"
+          type="text/css"
+          href="{{ url_for('static', filename='node_modules/datatables/media/css/jquery.dataTables.min.css') }}">
 
-    <script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='bower_components/datatables/media/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js') }}"></script>
+    <script
+            src="{{ url_for('static', filename='node_modules/datatables/media/js/jquery.dataTables.min.js') }}"></script>
 
-    <script src="{{ url_for('static', filename='bower_components/jquery-ui/jquery-ui.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='jquery-contextmenu/jquery.contextMenu.js') }}"></script>
-    <script src="{{ url_for('static', filename='bower_components/Flot/jquery.flot.js') }}"></script>
-    <script src="{{ url_for('static', filename='bower_components/knockout/dist/knockout.debug.js') }}"></script>
-    <script src="{{ url_for('static', filename='bower_components/lodash/dist/lodash.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='bower_components/system.js/dist/system.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/jquery-ui/ui/widget.js') }}"></script>
+    <script
+            src="{{ url_for('static', filename='node_modules/jquery-contextmenu/dist/jquery.contextMenu.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/jquery.flot/jquery.flot.js') }}"></script>
+    <script
+            src="{{ url_for('static', filename='node_modules/knockout/build/output/knockout-latest.debug.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/lodash/lodash.min.js') }}"></script>
 
     <script type="text/javascript">
         var signals = {
-            {% for signum, name in signals.items() %}
-                '{{ name }}': {{ signum }},
-            {% endfor %}
-        }
+        {% for signum, name in signals.items() %}
+            '{{ name }}': {{signum}},
+        {% endfor %}
+        };
     </script>
 
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-
-    <script type="text/javascript">
-    // set our baseURL reference path
-    SystemJS.config({
-        baseURL: "{{ url_for('static', filename='js')}}"
-    });
-
-    SystemJS.import('app.js');
-    </script>
 
 </head>
 
@@ -59,13 +60,17 @@
 
             <div>
                 <div class="chart_container">
-                    <div id="cpu_chart" class="chart" data-bind="plot: cpu_data_for_plot, plotOptions: { plot_size: 30 }"></div>
+                    <div id="cpu_chart"
+                         class="chart"
+                         data-bind="plot: cpu_data_for_plot, plotOptions: { plot_size: 30 }"></div>
                     <div class="xlabel">
                         CPU Usage = <span data-bind="text: cpu_percent"></span>
                     </div>
                 </div>
                 <div class="chart_container">
-                    <div id="mem_chart" class="chart" data-bind="plot: mem_data_for_plot, plotOptions: { plot_size: 30 }"></div>
+                    <div id="mem_chart"
+                         class="chart"
+                         data-bind="plot: mem_data_for_plot, plotOptions: { plot_size: 30 }"></div>
                     <div class="xlabel">
                         Mem Usage = <span data-bind="text: percent_mem"></span>
                     </div>
@@ -86,7 +91,7 @@
                         </tr>
                         <tr>
                             <td>Processi in esecuzione:
-                                <td><span data-bind="text: nproc"></span></td>
+                            <td><span data-bind="text: nproc"></span></td>
                         </tr>
                     </table>
                 </div>
@@ -94,7 +99,8 @@
         </div>
 
         <div id="main-content">
-            <table id="proc_list" data-bind="procTable: { sel_id: sel_id, procTableObj: procTableObj }">
+            <table id="proc_list"
+                   data-bind="procTable: { sel_id: sel_id, procTableObj: procTableObj }">
                 <thead>
                     <tr>
                         <th>Name</th>

@@ -135,7 +135,7 @@ def main():
     try:
         credentials = user.load_credentials()
         app.config["CREDENTIALS"] = credentials
-        app.run(debug, host, port)
+        app.run(host, port, debug)
     except IOError:
         print("Cannot load login data.", file=sys.stderr)
 

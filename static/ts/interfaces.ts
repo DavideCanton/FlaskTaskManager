@@ -1,4 +1,5 @@
-export interface IPlatformInfoResponse {
+export interface IPlatformInfoResponse
+{
     machine_name: string;
     cpu_num: number;
     cpu_percent: number;
@@ -7,12 +8,14 @@ export interface IPlatformInfoResponse {
     percent_mem: number;
 }
 
-export interface ISignalChosen {
+export interface ISignalChosen
+{
     strnum: number;
     signum: number;
 }
 
-export interface IMenuObj {
+export interface IMenuObj
+{
     name: string;
     sigName?: string;
     sigNum?: number;
