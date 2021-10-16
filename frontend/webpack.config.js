@@ -3,7 +3,7 @@ const webpack = require("webpack");
 
 module.exports = {
   entry: "./ts/app.ts",
-  mode: "development",
+  mode: "production",
   output: {
     path: path.resolve(__dirname, "../static"),
     filename: "app.js",
@@ -29,5 +29,5 @@ module.exports = {
       $: "jquery",
       jQuery: "jquery",
     }),
-  ],
+  ]
 };

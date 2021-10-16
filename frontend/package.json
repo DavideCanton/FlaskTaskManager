@@ -17,6 +17,8 @@
         "lodash": "^4.17.21"
     },
     "devDependencies": {
+        "@types/datatables.net": "^1.10.21",
+        "@types/flot": "0.0.32",
         "@types/jquery": "3.5.6",
         "@types/jquery.contextmenu": "^1.7.35",
         "@types/jqueryui": "^1.12.16",

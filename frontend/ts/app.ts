@@ -1,12 +1,13 @@
-import * as ko from 'knockout';
-import _ from 'lodash';
-import * as interfaces from './interfaces';
-import * as utils from './utils';
+import 'datatables';
 import 'jquery-contextmenu';
 import 'jquery-ui';
-import 'datatables';
+import 'jquery-ui/ui/widgets/slider';
 import 'jquery.flot';
+import { applyBindings, bindingHandlers, observable, observableArray, pureComputed, unwrap, utils } from 'knockout';
+import _ from 'lodash';
+import { IMenuObj, IPlatformInfoResponse, ISignalChosen } from './interfaces';
 import './styles';
+import { fileSize, push_and_remove } from './utils';
 
 let signals: Record<string, number>;
 
@@ -15,24 +16,24 @@ export class AppViewModel
     interval = 3000;
     plot_size = 30;
 
-    machine_name = ko.observable<string>();
-    cpu_num = ko.observable<number>();
-    cpu_percent = ko.observable<string>();
-    total_mem = ko.observable<string>();
-    available_mem = ko.observable<string>();
-    percent_mem = ko.observable<string>();
-    nproc = ko.observable<number>();
-    time_val = ko.observable<string>();
-    cpu_data = ko.observableArray<number>().extend({ deferred: true });
-    mem_data = ko.observableArray<number>().extend({ deferred: true });
-    sel_id = ko.observable<string | null>();
-    procTableObj = ko.observable<any>();
+    machine_name = observable<string>();
+    cpu_num = observable<number>();
+    cpu_percent = observable<string>();
+    total_mem = observable<string>();
+    available_mem = observable<string>();
+    percent_mem = observable<string>();
+    nproc = observable<number>();
+    time_val = observable<string>();
+    cpu_data = observableArray<number>().extend({ deferred: true });
+    mem_data = observableArray<number>().extend({ deferred: true });
+    sel_id = observable<string | null>();
+    procTableObj = observable<DataTables.Api>();
     timer: any | null = null;
 
     updateLabels()
     {
         $.getJSON("/platform_info")
-            .then((data: { data: interfaces.IPlatformInfoResponse }) =>
+            .then((data: { data: IPlatformInfoResponse }) =>
             {
                 let d = data.data;
 
@@ -40,22 +41,22 @@ export class AppViewModel
                 this.machine_name(d.machine_name);
                 this.cpu_num(d.cpu_num);
                 this.cpu_percent(`${d.cpu_percent}%`);
-                this.total_mem(utils.Utils.fileSize(d.total_mem));
-                this.available_mem(utils.Utils.fileSize(d.available_mem));
+                this.total_mem(fileSize(d.total_mem));
+                this.available_mem(fileSize(d.available_mem));
                 this.percent_mem(`${d.percent_mem}%`);
                 this.nproc($("#proc_list").find("tbody").find("tr").length);
 
-                utils.Utils.push_and_remove(this.cpu_data, d.cpu_percent, this.plot_size);
-                utils.Utils.push_and_remove(this.mem_data, d.percent_mem, this.plot_size);
+                push_and_remove(this.cpu_data, d.cpu_percent, this.plot_size);
+                push_and_remove(this.mem_data, d.percent_mem, this.plot_size);
             });
     }
 
-    cpu_data_for_plot = ko.pureComputed(() =>
+    cpu_data_for_plot = pureComputed(() =>
     {
         return _.zip(_.range(this.cpu_data().length), this.cpu_data());
     });
 
-    mem_data_for_plot = ko.pureComputed(() =>
+    mem_data_for_plot = pureComputed(() =>
     {
         return _.zip(_.range(this.mem_data().length), this.mem_data());
     });
@@ -87,13 +88,17 @@ export class AppViewModel
         this.timer = setInterval(() =>
         {
             let table = this.procTableObj();
-            table.ajax.reload();
-            table.draw();
+            if(table)
+            {
+                table.ajax.reload();
+                table.draw();
+                table.columns.adjust();
+            }
             this.updateLabels();
         }, this.interval);
     }
 
-    chooseSignal(): interfaces.ISignalChosen | null
+    chooseSignal(): ISignalChosen | null
     {
         let numS = prompt("Inserisci il codice relativo al segnale che vuoi inviare:", "15") ?? '';
         let num = parseInt(numS, 10);
@@ -107,7 +112,7 @@ export class AppViewModel
 
     setupMenu()
     {
-        let menu_sign: Record<string, interfaces.IMenuObj> = {};
+        let menu_sign: Record<string, IMenuObj> = {};
         _.forOwn(signals, function(sigNum, sigName)
         {
             menu_sign[sigNum] = { name: `Send ${sigName}`, sigName, sigNum };
@@ -165,7 +170,7 @@ export class AppViewModel
     }
 }
 
-ko.bindingHandlers.plot = {
+bindingHandlers.plot = {
     init: function(element: any, _valueAccessor: any, allBindings: { get: (arg0: string) => any; })
     {
         let options = allBindings.get("plotOptions");
@@ -175,30 +180,30 @@ ko.bindingHandlers.plot = {
             max: 100
         }, options);
 
-        let plot = ($ as any).plot(element, [
+        let plot = $.plot(element, [
             []
         ], {
             yaxis: { min: options.min, max: options.max, ticks: options.ticks },
             xaxis: { show: false, min: 0, max: options.plot_size - 1 }
         });
 
-        ko.utils.domData.set(element, "plot", plot);
+        utils.domData.set(element, "plot", plot);
     },
 
     update: function(element: any, valueAccessor: () => any)
     {
-        let plot = ko.utils.domData.get(element, "plot");
-        plot.setData([ko.unwrap(valueAccessor())]);
+        let plot = utils.domData.get(element, "plot");
+        plot.setData([unwrap(valueAccessor())]);
         plot.draw();
     }
 };
 
-ko.bindingHandlers.procTable = {
+bindingHandlers.procTable = {
     init: function(element: any, valueAccessor: () => any)
     {
-        let value = ko.unwrap(valueAccessor());
+        let value = unwrap(valueAccessor());
         let proc_table = $(element);
-        let table = (proc_table as any).DataTable(
+        let table = proc_table.DataTable(
             {
                 ajax: {
                     url: "/proc_info",
@@ -217,18 +222,16 @@ ko.bindingHandlers.procTable = {
                     { className: "dt-left" }
                 ],
                 order: [0, "asc"],
-                fnRowCallback: function(nRow: any, aData: string[])
+                rowCallback: (nRow: any, aData: object | any[]) =>
                 {
-                    $(nRow).attr("id", "proc_" + aData[1]);
+                    if(_.isArray(aData))
+                        $(nRow).attr("id", `proc_${aData[1]}`);
                     return nRow;
                 },
-                scrollY: document.body.scrollHeight - 200,
+                scrollY: `${document.body.scrollHeight - 200}px`,
                 columnDefs: [
                     {
-                        render: function(data: number, type: string)
-                        {
-                            return (type === "display") ? utils.Utils.fileSize(data) : data;
-                        },
+                        render: (data: number, type: string) => type === "display" ? fileSize(data) : data,
                         targets: 4
                     }
                 ]
@@ -257,7 +260,7 @@ ko.bindingHandlers.procTable = {
             }
         });
 
-        ko.utils.domData.set(element, "table", table);
+        utils.domData.set(element, "table", table);
         value.procTableObj(table);
     }
 };
@@ -265,6 +268,6 @@ ko.bindingHandlers.procTable = {
 $(function()
 {
     const vm = new AppViewModel();
-    ko.applyBindings(vm);
+    applyBindings(vm);
     vm.init();
 });

@@ -1,19 +1,15 @@
-import * as ko from 'knockout';
+import { ObservableArray } from "knockout";
 
-export class Utils
+export function fileSize(a: number): string
 {
-    static fileSize(a: number): string
-    {
-        var e = Math.log(a) / Math.log(1024) | 0;
-        return (a / Math.pow(1024, e)).toFixed(2)
-            + ' ' + (e ? 'KMGTPEZY'[--e] + 'iB' : 'Bytes');
-    }
+    var e = Math.log(a) / Math.log(1024) | 0;
+    return (a / Math.pow(1024, e)).toFixed(2)
+        + ' ' + (e ? 'KMGTPEZY'[--e] + 'iB' : 'Bytes');
+}
 
-    static push_and_remove<T>(array: ko.ObservableArray<T>, data: T, plot_size: number)
-    {
-        array.push(data);
-        if(array.length > plot_size)
-            array.shift();
-    }
-
-};
+export function push_and_remove<T>(array: ObservableArray<T>, data: T, plot_size: number)
+{
+    array.push(data);
+    if(array.length > plot_size)
+        array.shift();
+}
