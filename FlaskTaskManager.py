@@ -85,7 +85,6 @@ def logout():
 @login_required
 def proc_list():
     ctx = {
-        "processes": processes.get_processes(),
         "signals": processes.get_available_signals()
     }
     return render_template("proc_list.html", **ctx)

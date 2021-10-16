@@ -1,12 +1,12 @@
 {
     "compilerOptions": {
         "target": "es5",
-        "module": "UMD",
+        "module": "es6",
         "moduleResolution": "node",
         "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "outDir": "./js"
+        "outDir": "../static/js"
     }
 }

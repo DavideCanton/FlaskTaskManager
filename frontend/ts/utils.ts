@@ -9,10 +9,8 @@ export class Utils
             + ' ' + (e ? 'KMGTPEZY'[--e] + 'iB' : 'Bytes');
     }
 
-    static push_and_remove<T>(array: ko.MaybeObservableArray<T>, data: T, plot_size: number)
+    static push_and_remove<T>(array: ko.ObservableArray<T>, data: T, plot_size: number)
     {
-        array = ko.unwrap(array);
-
         array.push(data);
         if(array.length > plot_size)
             array.shift();

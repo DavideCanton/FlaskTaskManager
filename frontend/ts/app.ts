@@ -1,10 +1,14 @@
 import * as ko from 'knockout';
 import _ from 'lodash';
-import $ from 'jquery';
 import * as interfaces from './interfaces';
 import * as utils from './utils';
+import 'jquery-contextmenu';
+import 'jquery-ui';
+import 'datatables';
+import 'jquery.flot';
+import './styles';
 
-let signals: any;
+let signals: Record<string, number>;
 
 export class AppViewModel
 {
@@ -23,27 +27,27 @@ export class AppViewModel
     mem_data = ko.observableArray<number>().extend({ deferred: true });
     sel_id = ko.observable<string | null>();
     procTableObj = ko.observable<any>();
-    timer: number | null = null;
+    timer: any | null = null;
 
     updateLabels()
     {
-        $.getJSON("/platform_info", (data: { data: interfaces.IPlatformInfoResponse }) =>
-        {
-            let d = data.data;
+        $.getJSON("/platform_info")
+            .then((data: { data: interfaces.IPlatformInfoResponse }) =>
+            {
+                let d = data.data;
 
-            //noinspection JSValidateTypes
-            document.title = "Task Manager for " + d.machine_name;
-            this.machine_name(d.machine_name);
-            this.cpu_num(d.cpu_num);
-            this.cpu_percent(d.cpu_percent + "%");
-            this.total_mem(utils.Utils.fileSize(d.total_mem));
-            this.available_mem(utils.Utils.fileSize(d.available_mem));
-            this.percent_mem(d.percent_mem + "%");
-            this.nproc($("#proc_list").find("tbody").find("tr").length);
+                document.title = `Task Manager for ${d.machine_name}`;
+                this.machine_name(d.machine_name);
+                this.cpu_num(d.cpu_num);
+                this.cpu_percent(`${d.cpu_percent}%`);
+                this.total_mem(utils.Utils.fileSize(d.total_mem));
+                this.available_mem(utils.Utils.fileSize(d.available_mem));
+                this.percent_mem(`${d.percent_mem}%`);
+                this.nproc($("#proc_list").find("tbody").find("tr").length);
 
-            utils.Utils.push_and_remove(this.cpu_data, d.cpu_percent, this.plot_size);
-            utils.Utils.push_and_remove(this.mem_data, d.percent_mem, this.plot_size);
-        });
+                utils.Utils.push_and_remove(this.cpu_data, d.cpu_percent, this.plot_size);
+                utils.Utils.push_and_remove(this.mem_data, d.percent_mem, this.plot_size);
+            });
     }
 
     cpu_data_for_plot = ko.pureComputed(() =>
@@ -58,17 +62,17 @@ export class AppViewModel
 
     setupSlider()
     {
-        let init_val = this.interval / 1000;
-        ($("#time_slider") as any).slider({
+        const init_val = this.interval / 1000;
+        $("#time_slider").slider({
             value: init_val,
             min: 1,
             max: 60,
             step: 1,
-            slide: function(_event: any, ui: any)
+            slide: (_event: any, ui: any) =>
             {
-                this.time_val(ui.value + "s");
+                this.time_val(`${ui.value}s`);
             },
-            change: function(_event: any, ui: any) 
+            change: (_event: any, ui: any) =>
             {
                 clearInterval(this.timer);
                 this.interval = ui.value * 1000;
@@ -103,22 +107,22 @@ export class AppViewModel
 
     setupMenu()
     {
-        let menu_sign: { [key: string]: interfaces.IMenuObj } = {};
-        _.forOwn(signals, function(v, k)
+        let menu_sign: Record<string, interfaces.IMenuObj> = {};
+        _.forOwn(signals, function(sigNum, sigName)
         {
-            menu_sign[v] = { name: "Send " + k, sigName: k, sigNum: +v };
+            menu_sign[sigNum] = { name: `Send ${sigName}`, sigName, sigNum };
         });
         menu_sign.choose = { name: "Input signal number" };
 
-        ($ as any).contextMenu({
+        $.contextMenu({
             selector: "#proc_list tbody tr",
             build: ($trigger: any): boolean | {} =>
             {
-                if(!this.sel_id())
-                {
+                const selId = this.sel_id();
+                if(!selId)
                     return false;
-                }
-                $trigger = $("#" + this.sel_id());
+
+                $trigger = $(`#${selId}`);
                 let name = $trigger.children().eq("0").text();
                 let pid = $trigger.children().eq("1").text();
                 return {
@@ -131,25 +135,19 @@ export class AppViewModel
                         {
                             let opt = menu_sign[key];
                             if(opt)
-                            {
-                                res = {
-                                    strnum: opt.sigName,
-                                    signum: opt.sigNum
-                                };
-                            }
+                                res = { strnum: opt.sigName, signum: opt.sigNum };
                         }
 
-                        if(res && confirm("Vuoi davvero inviare il segnale " + res.strnum + " al processo " + name + "?"))
+                        if(res && confirm(`Vuoi davvero inviare il segnale ${res.strnum} al processo ${name}?`))
                         {
-                            $.post("/kill", {
-                                "pid": pid,
-                                "signum": res.signum
-                            },
-                                data =>
-                                {
-                                    alert(data);
-                                    this.sel_id(null);
-                                });
+                            $.post(
+                                "/kill",
+                                { pid, signum: res.signum }
+                            ).then(data =>
+                            {
+                                alert(data);
+                                this.sel_id(null);
+                            });
                         }
                     },
                     items: menu_sign

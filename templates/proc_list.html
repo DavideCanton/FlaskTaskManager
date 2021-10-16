@@ -5,43 +5,15 @@
     <meta charset="UTF-8">
     <title>Proc info</title>
 
-    <link rel="stylesheet"
-          type="text/css"
-          href="{{ url_for('static', filename='mycss.css') }}">
-    <link rel="stylesheet"
-          type="text/css"
-          href="{{ url_for('static', filename='node_modules/jquery-contextmenu/dist/jquery.contextMenu.css') }}">
-    <link rel="stylesheet"
-          type="text/css"
-          href="{{ url_for('static', filename='node_modules/jquery-ui/themes/base/all.css') }}">
-
-    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='node_modules/datatables/media/css/dataTables.bootstrap.min.css') }}"> -->
-    <link rel="stylesheet"
-          type="text/css"
-          href="{{ url_for('static', filename='node_modules/datatables/media/css/jquery.dataTables.min.css') }}">
-
-    <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js') }}"></script>
-    <script
-            src="{{ url_for('static', filename='node_modules/datatables/media/js/jquery.dataTables.min.js') }}"></script>
-
-    <script src="{{ url_for('static', filename='node_modules/jquery-ui/ui/widget.js') }}"></script>
-    <script
-            src="{{ url_for('static', filename='node_modules/jquery-contextmenu/dist/jquery.contextMenu.js') }}"></script>
-    <script src="{{ url_for('static', filename='node_modules/jquery.flot/jquery.flot.js') }}"></script>
-    <script
-            src="{{ url_for('static', filename='node_modules/knockout/build/output/knockout-latest.debug.js') }}"></script>
-    <script src="{{ url_for('static', filename='node_modules/lodash/lodash.min.js') }}"></script>
-
     <script type="text/javascript">
-        var signals = {
+        window.signals = {
         {% for signum, name in signals.items() %}
-            '{{ name }}': {{signum}},
+        '{{ name }}': {{signum}},
         {% endfor %}
         };
     </script>
 
-    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
 
 </head>
 

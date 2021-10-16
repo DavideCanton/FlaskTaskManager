@@ -1,3 +1,4 @@
 hash.tmp
 node_modules/
 __pycache__/
+static/
